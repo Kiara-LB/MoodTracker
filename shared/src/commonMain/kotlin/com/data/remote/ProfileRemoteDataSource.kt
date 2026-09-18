@@ -5,11 +5,11 @@ import com.data.dto.toDomain
 import com.data.dto.toDto
 import com.domain.model.Profile
 import io.github.jan.supabase.annotations.SupabaseInternal
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.api.AuthenticatedApiConfig
 import io.github.jan.supabase.postgrest.Postgrest
-
-class ProfileRemoteDataSource @OptIn(SupabaseInternal::class) constructor(
-    private val auth: AuthenticatedApiConfig.Auth,
+class ProfileRemoteDataSource(
+    private val auth: Auth,
     private val postgrest: Postgrest
 ) {
     suspend fun fetchProfile(userId: String): Profile {

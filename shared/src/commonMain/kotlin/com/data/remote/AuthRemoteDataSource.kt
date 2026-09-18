@@ -1,10 +1,9 @@
 package com.data.remote
-import androidx.compose.ui.text.input.KeyboardType.Companion.Email
+
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-
 class AuthRemoteDataSource(private val auth: Auth) {
     suspend fun signUp(name: String, email: String, password: String) {
         auth.signUpWith(Email) {
