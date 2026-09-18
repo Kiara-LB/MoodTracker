@@ -21,4 +21,5 @@ class AuthRemoteDataSource(private val auth: Auth) {
         }
     }
     fun currentUserId(): String? = auth.currentUserOrNull()?.id
+    suspend fun signOut() = auth.signOut()
 }

@@ -10,5 +10,14 @@ class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource) : AuthRep
     override suspend fun login(email: String, password: String) = runCatching {
         dataSource.signIn(email, password)
     }
+
+    override suspend fun signOut(): Result<Unit> {
+        return try {
+            dataSource.signOut()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
     override fun currentUserId() = dataSource.currentUserId()
 }
