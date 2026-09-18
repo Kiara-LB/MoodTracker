@@ -1,10 +1,12 @@
 package com.di
 
+import com.presentation.auth.LoginViewModel
+import com.presentation.auth.RegisterViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val presentationModule = module {
-    // acá vas a ir agregando, por ejemplo:
-    // viewModel { LoginViewModel(get()) }
-    // viewModel { HomeViewModel(get(), get()) }
-    // viewModel { AddNoteViewModel(get()) }
+    viewModel { LoginViewModel(get()) }
+    viewModel { RegisterViewModel(get()) }
+
 }

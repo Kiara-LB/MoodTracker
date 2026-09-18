@@ -1,0 +1,14 @@
+package com.data.repository
+
+import com.data.remote.AuthRemoteDataSource
+import com.domain.repository.AuthRepository
+
+class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource) : AuthRepository {
+    override suspend fun register(name: String, email: String, password: String) = runCatching {
+        dataSource.signUp(name, email, password)
+    }
+    override suspend fun login(email: String, password: String) = runCatching {
+        dataSource.signIn(email, password)
+    }
+    override fun currentUserId() = dataSource.currentUserId()
+}
