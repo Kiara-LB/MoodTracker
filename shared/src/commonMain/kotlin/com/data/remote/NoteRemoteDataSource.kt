@@ -17,4 +17,16 @@ class NoteRemoteDataSource(private val postgrest: Postgrest) {
                 order("created_at", Order.DESCENDING)
             }
             .decodeList<NoteDto>()
+
+    suspend fun updateNote(id: String, dto: NoteDto) {
+        postgrest.from("notes")
+            .update(dto) {
+                filter { eq("id", id) }
+            }
+    }
+    suspend fun deleteNote(id: String) {
+        postgrest.from("notes").delete {
+            filter { eq("id", id) }
+        }
+    }
 }

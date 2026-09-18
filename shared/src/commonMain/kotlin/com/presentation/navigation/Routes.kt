@@ -8,5 +8,5 @@ sealed class Routes {
     @Serializable object Home : Routes()
     @Serializable object Notes : Routes()
     @Serializable object Profile : Routes()
-    @Serializable object AddNote : Routes()
+    @Serializable data class NoteForm(val noteId: String? = null) : Routes()
 }

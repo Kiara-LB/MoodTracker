@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.domain.model.Note
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NotesScreen(
+    onEditNote: (Note) -> Unit,
     viewModel: NotesViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState
@@ -43,7 +45,9 @@ fun NotesScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(uiState.notes) { note ->
-                        NoteCard(note = note)
+                        NoteCard(note = note, onEditClick = onEditNote,
+                            onDeleteConfirmed = { viewModel.deleteNote(it.id) }
+                        )
                     }
                 }
             }
