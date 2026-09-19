@@ -1,6 +1,9 @@
 package com.presentation.notes
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -9,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
@@ -18,87 +22,122 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.domain.model.Note
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun NoteCard(note: Note,
-             onEditClick: (Note) -> Unit,
-             modifier: Modifier = Modifier,
-             onDeleteConfirmed: (Note) -> Unit) {
-
+fun NoteCard(
+    note: Note,
+    onEditClick: (Note) -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteConfirmed: (Note) -> Unit
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Card(
-            modifier = modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = note.mood.displayName,
-                        style = MaterialTheme.typography.titleMedium
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            // Fila superior: imagen del mood + nombre + hora ... editar/eliminar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(note.mood.iconRes),
+                        contentDescription = note.mood.displayName,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
                     )
-                    Row {
-                        IconButton(onClick = { onEditClick(note) }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Editar nota")
-                        }
-                        IconButton(onClick = { showDeleteDialog = true }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Eliminar nota",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Column {
+                        Text(
+                            text = note.mood.displayName,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = formatNoteDate(note.createdAt),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = "Te sentís: ${note.feelingText}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Debido a: ${note.causeText}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Descripción: ${note.description}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                val localDateTime = note.createdAt.toLocalDateTime(TimeZone.currentSystemDefault())
-                Text(
-                    text = "${localDateTime.dayOfMonth}/${localDateTime.monthNumber}/${localDateTime.year} - " +
-                            "${localDateTime.hour}:${
-                                localDateTime.minute.toString().padStart(2, '0')
-                            }",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row {
+                    IconButton(onClick = { onEditClick(note) }) {
+                        Icon(Icons.Default.Edit, contentDescription = "Editar nota",
+                            tint = Color(0xFF804CB3)
+                        )
+                    }
+                    IconButton(onClick = { showDeleteDialog = true }) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Eliminar nota",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
             }
-        }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            val feelingAnnotated = buildAnnotatedString {
+                append("Te sentís: ")
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(note.feelingText)
+                }
+            }
+            Text(text = feelingAnnotated, style = MaterialTheme.typography.bodyMedium)
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            val causeAnnotated = buildAnnotatedString {
+                append("Debido a: ")
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(note.causeText)
+                }
+            }
+            Text(text = causeAnnotated, style = MaterialTheme.typography.bodyMedium)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            val noteAnnotated = buildAnnotatedString {
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("Nota: ")
+                }
+                append(note.description)
+            }
+            Text(
+                text = noteAnnotated,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
+
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -121,5 +160,4 @@ fun NoteCard(note: Note,
             }
         )
     }
-
 }
