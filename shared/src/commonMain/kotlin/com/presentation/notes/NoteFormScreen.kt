@@ -5,27 +5,33 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.domain.model.Mood
+import com.domain.model.Note
 import org.koin.compose.viewmodel.koinViewModel
 
+
 @Composable
-fun AddNoteScreen(
-    onNoteSaved: () -> Unit,
+fun NoteFormScreen(
+    noteToEdit: Note?, // null = modo "crear", no-null = modo "editar"
+    onSaved: () -> Unit,
     onCancel: () -> Unit,
-    viewModel: AddNoteViewModel = koinViewModel()
+    viewModel: NotesViewModel
 ) {
-    var selectedMood by remember { mutableStateOf<Mood?>(null) }
-    var feelingText by remember { mutableStateOf("") }
-    var causeText by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var selectedMood by remember { mutableStateOf(noteToEdit?.mood) }
+    var feelingText by remember { mutableStateOf(noteToEdit?.feelingText ?: "") }
+    var causeText by remember { mutableStateOf(noteToEdit?.causeText ?: "") }
+    var description by remember { mutableStateOf(noteToEdit?.description ?: "") }
 
     val uiState = viewModel.uiState
+    var wasSaving by remember { mutableStateOf(false) }
 
-    LaunchedEffect(uiState.success) {
-        if (uiState.success) onNoteSaved()
+    LaunchedEffect(uiState.isSaving) {
+        if (wasSaving && !uiState.isSaving && uiState.error == null) {
+            onSaved()
+        }
+        wasSaving = uiState.isSaving
     }
 
     Column(
@@ -34,13 +40,12 @@ fun AddNoteScreen(
             .padding(24.dp)
     ) {
         Text(
-            text = "¿Cómo te sentís hoy?",
+            text = if (noteToEdit == null) "¿Cómo te sentís hoy?" else "Editar nota",
             style = MaterialTheme.typography.headlineSmall
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Selector de mood — reemplazar por imágenes cuando tengas los assets
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(Mood.entries) { mood ->
                 FilterChip(
@@ -84,9 +89,10 @@ fun AddNoteScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (uiState.error != null) {
+        val errorMessage = uiState.error
+        if (errorMessage != null) {
             Text(
-                text = uiState.error,
+                text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -106,21 +112,24 @@ fun AddNoteScreen(
 
             Button(
                 onClick = {
-                    selectedMood?.let { mood ->
+                    val mood = selectedMood ?: return@Button
+                    if (noteToEdit == null) {
                         viewModel.saveNote(mood, feelingText, causeText, description)
+                    } else {
+                        viewModel.updateNote(noteToEdit.id, mood, feelingText, causeText, description)
                     }
                 },
-                enabled = !uiState.isLoading && selectedMood != null && description.isNotBlank(),
+                enabled = !uiState.isSaving && selectedMood != null && description.isNotBlank(),
                 modifier = Modifier.weight(1f)
             ) {
-                if (uiState.isLoading) {
+                if (uiState.isSaving) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Guardar")
+                    Text(if (noteToEdit == null) "Guardar" else "Guardar cambios")
                 }
             }
         }

@@ -31,4 +31,25 @@ class NoteRepositoryImpl(
     override suspend fun getNotes(): Result<List<Note>> = runCatching {
         dataSource.getNotes().map { it.toDomain() }
     }
+
+    override suspend fun updateNote(
+        id: String,
+        mood: Mood,
+        feelingText: String,
+        causeText: String,
+        description: String
+    ) = runCatching {
+        dataSource.updateNote(
+            id,
+            NoteDto(
+                mood = mood.id,
+                feelingText = feelingText,
+                causeText = causeText,
+                description = description
+            )
+        )
+    }
+    override suspend fun deleteNote(id: String) = runCatching {
+        dataSource.deleteNote(id)
+    }
 }

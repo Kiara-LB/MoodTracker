@@ -30,17 +30,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.presentation.auth.LoginScreen
 import com.presentation.auth.RegisterScreen
 import com.presentation.home.HomeScreen
 import com.presentation.navigation.Routes
-import com.presentation.notes.AddNoteScreen
+import com.presentation.notes.NoteFormScreen
 import com.presentation.notes.NotesScreen
+import com.presentation.notes.NotesViewModel
 import com.presentation.profile.ProfileScreen
 import org.jetbrains.compose.resources.painterResource
 
 import moodtracker.shared.generated.resources.Res
 import moodtracker.shared.generated.resources.compose_multiplatform
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() {
@@ -56,6 +59,7 @@ fun App() {
         )
 
         val showBottomBar = currentRoute in mainRoutes
+        val notesViewModel: NotesViewModel = koinViewModel()
 
         Scaffold(
             bottomBar = {
@@ -91,6 +95,7 @@ fun App() {
                 composable<Routes.Login> {
                     LoginScreen(
                         onLoginSuccess = {
+                            notesViewModel.loadNotes()
                             navController.navigate(Routes.Home) {
                                 popUpTo(Routes.Login) { inclusive = true }
                             }
@@ -105,25 +110,35 @@ fun App() {
                 }
                 composable<Routes.Home> {
                     HomeScreen(
-                        onAddNoteClick = { navController.navigate(Routes.AddNote) },
+                        onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
                         onViewNotesClick = { navController.navigate(Routes.Notes) }
                     )
                 }
                 composable<Routes.Notes> {
-                    NotesScreen()
+                    NotesScreen(
+                        viewModel = notesViewModel,
+                        onEditNote = { note ->
+                            navController.navigate(Routes.NoteForm(noteId = note.id))
+                        }
+                    )
                 }
                 composable<Routes.Profile> {
                     ProfileScreen(
                         onLogout = {
                             navController.navigate(Routes.Login) {
-                                popUpTo(0) { inclusive = true } // limpia TODO el back stack
+                                popUpTo(0) { inclusive = true }
                             }
                         }
                     )
                 }
-                composable<Routes.AddNote> {
-                    AddNoteScreen(
-                        onNoteSaved = { navController.popBackStack() },
+                composable<Routes.NoteForm> { backStackEntry ->
+                    val route: Routes.NoteForm = backStackEntry.toRoute()
+                    val noteToEdit = route.noteId?.let { notesViewModel.findNoteById(it) }
+
+                    NoteFormScreen(
+                        noteToEdit = noteToEdit,
+                        viewModel = notesViewModel,
+                        onSaved = { navController.popBackStack() },
                         onCancel = { navController.popBackStack() }
                     )
                 }
@@ -131,7 +146,6 @@ fun App() {
         }
     }
 }
-
 private fun NavHostController.navigateToTab(route: Routes) {
     navigate(route) {
         popUpTo(graph.findStartDestination().id) { saveState = true }
