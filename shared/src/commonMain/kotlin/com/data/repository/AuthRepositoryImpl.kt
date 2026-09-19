@@ -20,4 +20,5 @@ class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource) : AuthRep
         }
     }
     override fun currentUserId() = dataSource.currentUserId()
+    override fun currentUserName() = dataSource.currentUserName()
 }

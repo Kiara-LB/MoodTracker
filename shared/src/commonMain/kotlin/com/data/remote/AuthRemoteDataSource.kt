@@ -3,6 +3,7 @@ package com.data.remote
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 class AuthRemoteDataSource(private val auth: Auth) {
     suspend fun signUp(name: String, email: String, password: String) {
@@ -22,4 +23,6 @@ class AuthRemoteDataSource(private val auth: Auth) {
     }
     fun currentUserId(): String? = auth.currentUserOrNull()?.id
     suspend fun signOut() = auth.signOut()
+    fun currentUserName(): String? =
+        auth.currentUserOrNull()?.userMetadata?.get("name")?.jsonPrimitive?.content
 }

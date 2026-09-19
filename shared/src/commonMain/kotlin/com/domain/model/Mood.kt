@@ -16,12 +16,12 @@ enum class Mood(
     val iconRes: DrawableResource,
     val color: Color
 ) {
-    HAPPY("happy", "Feliz", Res.drawable.happy, Color(0xFFFFC107)),
-    SAD("sad", "Triste", Res.drawable.sad, Color(0xFF64B5F6)),
-    ANXIOUS("anxious", "Ansioso", Res.drawable.anxious, Color(0xFF68C87D)),
-    ANGRY("angry", "Enojado", Res.drawable.angry, Color(0xFFE57373)),
-    CALM("calm", "Tranquilo", Res.drawable.calm, Color(0xFFA681C7)),
-    IN_LOVE("in_love", "Enamorado", Res.drawable.inlove, Color(0xFFF06292));
+    HAPPY("happy", "Feliz", Res.drawable.happy, Color(0xFFFBEBB2)),
+    SAD("sad", "Triste", Res.drawable.sad, Color(0xFFBCD9FC)),
+    ANXIOUS("anxious", "Ansioso", Res.drawable.anxious, Color(0xFFCCEDD4)),
+    ANGRY("angry", "Enojado", Res.drawable.angry, Color(0xFFF38383)),
+    CALM("calm", "Tranquilo", Res.drawable.calm, Color(0xFFDFBBFD)),
+    IN_LOVE("in_love", "Enamorado", Res.drawable.inlove, Color(0xFFFF8CBE));
 
 
     companion object {

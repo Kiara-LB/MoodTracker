@@ -111,7 +111,10 @@ fun App() {
                 composable<Routes.Home> {
                     HomeScreen(
                         onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
-                        onViewNotesClick = { navController.navigate(Routes.Notes) }
+                        onViewNotesClick = { navController.navigate(Routes.Notes) },
+                        onEditNoteClick = { note ->
+                            navController.navigate(Routes.NoteForm(noteId = note.id))
+                        }
                     )
                 }
                 composable<Routes.Notes> {
