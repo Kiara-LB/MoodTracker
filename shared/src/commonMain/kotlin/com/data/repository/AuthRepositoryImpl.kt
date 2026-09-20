@@ -30,4 +30,6 @@ class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource) : AuthRep
     override suspend fun updateAvatar(avatarId: String) = runCatching {
         dataSource.updateAvatar(avatarId)
     }
+    override val sessionStatus = dataSource.sessionStatus
+
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -49,13 +50,11 @@ fun ProfileScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Banner curvo con estrellas
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
-                .clip(RoundedCornerShape(24.dp))
-        ) {
+                .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))        ) {
             Image(
                 painter = painterResource(Res.drawable.banner),
                 contentDescription = null,
@@ -94,37 +93,43 @@ fun ProfileScreen(
         ) {
             OutlinedButton(
                 onClick = { showEditProfileDialog = true },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.DarkGray),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray)
-            ) {
-                Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.DarkGray)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Editar perfil")
-            }
-            Surface(
-                shape = RoundedCornerShape(50),
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp,
-                    MaterialTheme.colorScheme.outline
-                ),
-                modifier = Modifier.fillMaxWidth()
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray),
+                contentPadding = PaddingValues(horizontal = 20.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 14.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.DarkGray)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text("Editar perfil", color = Color.DarkGray, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+
+            Surface(
+                shape = RoundedCornerShape(50),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.DarkMode,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
+                        Icon(Icons.Default.DarkMode, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.DarkGray)
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("Modo oscuro")
+                        Text("Modo oscuro", color = Color.DarkGray, style = MaterialTheme.typography.bodyLarge)
                     }
                     Switch(checked = isDarkTheme, onCheckedChange = onToggleTheme)
                 }
@@ -139,6 +144,13 @@ fun ProfileScreen(
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFD81B60)),
                 border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFD81B60))
             ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = Color(0xFFD81B60)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text("Cerrar sesión", fontWeight = FontWeight.Bold)
             }
         }
@@ -166,27 +178,20 @@ fun ProfileScreen(
                             Box(
                                 modifier = Modifier
                                     .size(64.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                                        else Color.Transparent
-                                    )
-                                    .then(
-                                        if (isSelected)
-                                            Modifier.border(
-                                                2.dp,
-                                                MaterialTheme.colorScheme.primary,
-                                                CircleShape
-                                            )
-                                        else Modifier
-                                    )
                                     .clickable { selectedAvatar = avatar },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
                                     painter = painterResource(avatar.imageRes),
                                     contentDescription = avatar.id,
-                                    modifier = Modifier.size(52.dp).clip(CircleShape)
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .clip(CircleShape)
+                                        .then(
+                                            if (isSelected)
+                                                Modifier.border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                                            else Modifier
+                                        )
                                 )
                             }
                         }
@@ -200,6 +205,7 @@ fun ProfileScreen(
                         value = newName,
                         onValueChange = { newName = it },
                         singleLine = true,
+                        shape = RoundedCornerShape(50),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

@@ -7,23 +7,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.domain.model.Mood
 import com.domain.model.Note
+import com.domain.repository.AuthRepository
 import com.domain.usecase.GetNotesUseCase
 import com.domain.usecase.SaveNoteUseCase
 import kotlinx.coroutines.launch
 import com.domain.usecase.UpdateNoteUseCase
+import io.github.jan.supabase.auth.status.SessionStatus
 
 class NotesViewModel(
     private val getNotesUseCase: GetNotesUseCase,
     private val updateNoteUseCase: UpdateNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val saveNoteUseCase: SaveNoteUseCase
+    private val saveNoteUseCase: SaveNoteUseCase,
+    private val authRepository: AuthRepository
 
 ) : ViewModel() {
     var uiState by mutableStateOf(NotesUiState())
         private set
 
     init {
-        loadNotes()
+        viewModelScope.launch {
+            authRepository.sessionStatus.collect { status ->
+                if (status is SessionStatus.Authenticated) {
+                    loadNotes()
+                }
+            }
+        }
     }
     fun saveNote(mood: Mood, feelingText: String, causeText: String, description: String) {
         viewModelScope.launch {
