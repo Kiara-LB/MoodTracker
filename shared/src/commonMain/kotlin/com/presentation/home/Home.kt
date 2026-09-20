@@ -57,7 +57,9 @@ fun HomeScreen(
     onEditNoteClick: (Note) -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
     notesViewModel: NotesViewModel,
-) {
+    onCardClick: (Note) -> Unit,
+
+    ) {
     val uiState = viewModel.uiState
     val notesUiState = notesViewModel.uiState
     val greeting = remember { greetingByTime() }
@@ -220,7 +222,9 @@ fun HomeScreen(
                             NoteCard(
                                 note = note,
                                 onEditClick = onEditNoteClick,
-                                onDeleteConfirmed = { notesViewModel.deleteNote(it.id) }
+                                onDeleteConfirmed = { notesViewModel.deleteNote(it.id) },
+                                onCardClick = onCardClick
+
                             )
                         }
                     }

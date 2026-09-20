@@ -39,6 +39,7 @@ import com.presentation.auth.LoginScreen
 import com.presentation.auth.RegisterScreen
 import com.presentation.home.HomeScreen
 import com.presentation.navigation.Routes
+import com.presentation.notes.NoteDetailScreen
 import com.presentation.notes.NoteFormScreen
 import com.presentation.notes.NotesScreen
 import com.presentation.notes.NotesViewModel
@@ -108,7 +109,6 @@ fun App() {
                     }
                 }
             }
-
         ) { paddingValues ->
             NavHost(
                 navController = navController,
@@ -137,19 +137,33 @@ fun App() {
                     HomeScreen(
                         notesViewModel = notesViewModel,
                         onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
-                        onViewNotesClick = { navController.navigate(Routes.Notes) },      onEditNoteClick = { note ->
+                        onViewNotesClick = { navController.navigate(Routes.Notes) },
+                        onEditNoteClick = { note ->
                             navController.navigate(Routes.NoteForm(noteId = note.id))
+                        },
+                        onCardClick = { note ->
+                            navController.navigate(Routes.NoteDetail(noteId = note.id))
                         }
+                    )
+                }
 
+                composable<Routes.NoteDetail> { backStackEntry ->
+                    val route: Routes.NoteDetail = backStackEntry.toRoute()
+                    val note = notesViewModel.findNoteById(route.noteId)
+
+                    NoteDetailScreen(
+                        note = note,
+                        onBack = { navController.popBackStack() },
+                        onEditClick = { navController.navigate(Routes.NoteForm(noteId = it.id)) }
                     )
                 }
 
                 composable<Routes.Notes> {
                     NotesScreen(
                         viewModel = notesViewModel,
-                        onEditNote = { note ->
-                            navController.navigate(Routes.NoteForm(noteId = note.id))
-                        }
+                        onEditNote = { note -> navController.navigate(Routes.NoteForm(noteId = note.id)) },
+                        onNoteClick = { note -> navController.navigate(Routes.NoteDetail(noteId = note.id)) },
+                        onCardClick = { note -> navController.navigate(Routes.NoteDetail(noteId = note.id)) }
                     )
                 }
                 composable<Routes.Profile> {
@@ -175,12 +189,13 @@ fun App() {
                         onCancel = { navController.popBackStack() }
                     )
                 }
-            }
         }
     }
         }
     }
 }
+}
+
 
 private fun NavHostController.navigateToTab(route: Routes) {
     navigate(route) {
