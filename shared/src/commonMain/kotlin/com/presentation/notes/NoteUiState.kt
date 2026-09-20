@@ -7,5 +7,6 @@ data class NotesUiState(
     val isLoading: Boolean = false,
     val notes: List<Note> = emptyList(),
     val error: String? = null,
-    val isSaving: Boolean = false
+    val isSaving: Boolean = false,
+    val hasLoadedOnce: Boolean = false
 )

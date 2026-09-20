@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +41,8 @@ import com.domain.model.Note
 import com.presentation.home.homeBackground.StarryBackgroundLayer
 import com.presentation.notes.NoteCard
 import com.presentation.notes.NotesViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import moodtracker.shared.generated.resources.Res
@@ -52,7 +56,7 @@ fun HomeScreen(
     onViewNotesClick: () -> Unit,
     onEditNoteClick: (Note) -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
-    notesViewModel: NotesViewModel = koinViewModel()
+    notesViewModel: NotesViewModel,
 ) {
     val uiState = viewModel.uiState
     val notesUiState = notesViewModel.uiState
@@ -69,171 +73,181 @@ fun HomeScreen(
             Color(0xFFFCE4EC)
         )
     )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundGradient)
-    ) {
-        StarryBackgroundLayer(modifier = Modifier.fillMaxSize())
-
-        Column(
+    LaunchedEffect(notesUiState.notes) {
+        viewModel.updateStats(notesUiState.notes)
+    }
+    if (!notesUiState.hasLoadedOnce) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val uiState = viewModel.uiState
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(20.dp)
+                .fillMaxSize()
+                .background(backgroundGradient)
         ) {
-            Text(
-                text = "$greeting ${uiState.userName}!",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
+            StarryBackgroundLayer(modifier = Modifier.fillMaxSize())
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Card(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFDBC4EF)
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = "$greeting ${uiState.userName}!",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
                 )
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Image(
-                        painter = painterResource(Res.drawable.cloud),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .aspectRatio(1.9f)
-                            .align(Alignment.CenterEnd)
-                            .offset(x = 90.dp)
-                    )
 
-                    Text(
-                        text = phrase,
-                        modifier = Modifier
-                            .padding(start = 20.dp, end = 90.dp)
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFDBC4EF)
                     )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Image(
+                            painter = painterResource(Res.drawable.cloud),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .aspectRatio(1.9f)
+                                .align(Alignment.CenterEnd)
+                                .offset(x = 90.dp)
+                        )
+
+                        Text(
+                            text = phrase,
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 90.dp)
+                                .align(Alignment.CenterStart),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Mood scale de la semana",
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Mood scale de la semana",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    if (uiState.isLoading) {
-                        CircularProgressIndicator()
-                    } else {
-                        Row(
+                        LazyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            uiState.weeklyMoods.forEach { dayMood ->
+                            items(uiState.weeklyMoods) { dayMood ->
                                 WeeklyMoodItem(dayMood)
                             }
                         }
+
+
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Moods del mes",
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    if (uiState.monthlyPercentages.isEmpty() && !uiState.isLoading) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Todavía no hay notas este mes",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = "Moods del mes",
+                            style = MaterialTheme.typography.titleSmall
                         )
-                    } else {
-                        MonthlyMoodBarChart(uiState.monthlyPercentages)
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        if (uiState.monthlyPercentages.isEmpty()) {
+                            Text(
+                                text = "Todavía no hay notas este mes",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else {
+                            MonthlyMoodBarChart(uiState.monthlyPercentages)
+                        }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Tus notas",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    TextButton(onClick = onViewNotesClick) {
+                        Text("Ver todas")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (recentNotes.isEmpty() && !notesUiState.isLoading) {
+                    Text(
+                        text = "Todavía no creaste ninguna nota",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        recentNotes.forEach { note ->
+                            NoteCard(
+                                note = note,
+                                onEditClick = onEditNoteClick,
+                                onDeleteConfirmed = { notesViewModel.deleteNote(it.id) }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(96.dp))
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            FloatingActionButton(
+                onClick = onAddNoteClick,
+                containerColor = Color(0xFFEED5EC),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(20.dp)
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Tus notas",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                TextButton(onClick = onViewNotesClick) {
-                    Text("Ver todas")
-                }
+                Icon(Icons.Default.Add, contentDescription = "Agregar nota")
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if (recentNotes.isEmpty() && !notesUiState.isLoading) {
-                Text(
-                    text = "Todavía no creaste ninguna nota",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            } else {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    recentNotes.forEach { note ->
-                        NoteCard(
-                            note = note,
-                            onEditClick = onEditNoteClick,
-                            onDeleteConfirmed = { notesViewModel.deleteNote(it.id) }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(96.dp))
-        }
-
-        FloatingActionButton(
-            onClick = onAddNoteClick,
-            containerColor = Color(0xFFEED5EC),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(20.dp)
-
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Agregar nota")
         }
     }
 }
 @Composable
 private fun WeeklyMoodItem(dayMood: DayMood) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(48.dp)
+        ) {
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -245,6 +259,14 @@ private fun WeeklyMoodItem(dayMood: DayMood) {
                     painter = painterResource(dayMood.mood.iconRes),
                     contentDescription = dayMood.mood.displayName,
                     modifier = Modifier.size(48.dp)
+                )
+            } else {
+                Text(
+                    text = "sin\nregistro",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.LightGray,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    fontSize = androidx.compose.ui.unit.TextUnit(8f, androidx.compose.ui.unit.TextUnitType.Sp)
                 )
             }
         }

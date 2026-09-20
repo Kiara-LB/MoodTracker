@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -33,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.domain.repository.AuthRepository
 import com.presentation.auth.LoginScreen
 import com.presentation.auth.RegisterScreen
 import com.presentation.home.HomeScreen
@@ -41,10 +43,12 @@ import com.presentation.notes.NoteFormScreen
 import com.presentation.notes.NotesScreen
 import com.presentation.notes.NotesViewModel
 import com.presentation.profile.ProfileScreen
+import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
 
 import moodtracker.shared.generated.resources.Res
 import moodtracker.shared.generated.resources.compose_multiplatform
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -61,7 +65,20 @@ fun App() {
 
     val showBottomBar = currentRoute in mainRoutes
     val notesViewModel: NotesViewModel = koinViewModel()
+    val authRepository: AuthRepository = koinInject()
     var isDarkTheme by remember { mutableStateOf(false) }
+
+    val sessionStatus by authRepository.sessionStatus.collectAsState(initial = SessionStatus.Initializing)
+
+    when (val status = sessionStatus) {
+        is SessionStatus.Initializing -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        else -> {
+            val startDestination = if (status is SessionStatus.Authenticated) Routes.Home else Routes.Login
+
 
     MaterialTheme(
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
@@ -91,10 +108,11 @@ fun App() {
                     }
                 }
             }
+
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = Routes.Login,
+                startDestination = startDestination,
                 modifier = Modifier.padding(paddingValues)
             ) {
                 composable<Routes.Login> {
@@ -117,6 +135,7 @@ fun App() {
 
                 composable<Routes.Home> {
                     HomeScreen(
+                        notesViewModel = notesViewModel,
                         onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
                         onViewNotesClick = { navController.navigate(Routes.Notes) },      onEditNoteClick = { note ->
                             navController.navigate(Routes.NoteForm(noteId = note.id))
@@ -156,9 +175,11 @@ fun App() {
                         onCancel = { navController.popBackStack() }
                     )
                 }
-            } // cierra NavHost
-        } // cierra Scaffold
-    } // cierra MaterialTheme
+            }
+        }
+    }
+        }
+    }
 }
 
 private fun NavHostController.navigateToTab(route: Routes) {
