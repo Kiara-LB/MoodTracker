@@ -38,8 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 @Composable
 fun NotesScreen(
     onEditNote: (Note) -> Unit,
-    viewModel: NotesViewModel = koinViewModel()
-) {
+    viewModel: NotesViewModel = koinViewModel(),
+    onNoteClick: (Note) -> Unit,
+    onCardClick: (Note) -> Unit,
+
+    ) {
     val uiState = viewModel.uiState
     var selectedMood by remember { mutableStateOf<Mood?>(null) }
     var selectedDateMillis by remember { mutableStateOf<Long?>(null) }
@@ -157,7 +160,8 @@ fun NotesScreen(
                                 NoteCard(
                                     note = note,
                                     onEditClick = onEditNote,
-                                    onDeleteConfirmed = { viewModel.deleteNote(it.id) }
+                                    onDeleteConfirmed = { viewModel.deleteNote(it.id) },
+                                    onCardClick = onCardClick,
                                 )
                             }
                         }
