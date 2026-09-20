@@ -137,7 +137,7 @@ fun HomeScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -153,7 +153,7 @@ fun HomeScreen(
 
                         LazyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             items(uiState.weeklyMoods) { dayMood ->
                                 WeeklyMoodItem(dayMood)
@@ -164,7 +164,8 @@ fun HomeScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(20.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -190,7 +191,7 @@ fun HomeScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -230,8 +231,8 @@ fun HomeScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(96.dp))
-            }
+            Spacer(modifier = Modifier.height(96.dp))
+        }
 
             FloatingActionButton(
                 onClick = onAddNoteClick,

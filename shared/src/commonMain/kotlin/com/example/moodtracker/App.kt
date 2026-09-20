@@ -126,13 +126,11 @@ fun App() {
                         onNavigateToRegister = { navController.navigate(Routes.Register) }
                     )
                 }
-
                 composable<Routes.Register> {
                     RegisterScreen(
                         onRegisterSuccess = { navController.popBackStack() }
                     )
                 }
-
                 composable<Routes.Home> {
                     HomeScreen(
                         notesViewModel = notesViewModel,
@@ -142,8 +140,7 @@ fun App() {
                             navController.navigate(Routes.NoteForm(noteId = note.id))
                         },
                         onCardClick = { note ->
-                            navController.navigate(Routes.NoteDetail(noteId = note.id))
-                        }
+                            navController.navigate(Routes.NoteDetail(noteId = note.id)) }
                     )
                 }
 
@@ -157,7 +154,6 @@ fun App() {
                         onEditClick = { navController.navigate(Routes.NoteForm(noteId = it.id)) }
                     )
                 }
-
                 composable<Routes.Notes> {
                     NotesScreen(
                         viewModel = notesViewModel,
@@ -177,7 +173,6 @@ fun App() {
                         }
                     )
                 }
-
                 composable<Routes.NoteForm> { backStackEntry ->
                     val route: Routes.NoteForm = backStackEntry.toRoute()
                     val noteToEdit = route.noteId?.let { notesViewModel.findNoteById(it) }
@@ -189,12 +184,12 @@ fun App() {
                         onCancel = { navController.popBackStack() }
                     )
                 }
-        }
-    }
+            }
         }
     }
 }
 }
+    }
 
 
 private fun NavHostController.navigateToTab(route: Routes) {
