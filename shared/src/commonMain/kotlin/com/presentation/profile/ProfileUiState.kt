@@ -1,8 +1,10 @@
 package com.presentation.profile
 
-sealed class ProfileUiState {
-    object Idle : ProfileUiState()
-    object Loading : ProfileUiState()
-    object LoggedOut : ProfileUiState()
-    data class Error(val message: String) : ProfileUiState()
-}
+import com.domain.model.AvatarOption
+
+data class ProfileUiState(
+    val name: String = "",
+    val avatar: AvatarOption = AvatarOption.CAT,
+    val isLoading: Boolean = false,
+    val error: String? = null
+)

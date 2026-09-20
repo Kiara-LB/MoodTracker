@@ -20,6 +20,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,20 +49,23 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() {
-    MaterialTheme {
-        val navController = rememberNavController()
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = backStackEntry?.destination?.route
+    val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
 
-        val mainRoutes = setOf(
-            Routes.Home::class.qualifiedName,
-            Routes.Notes::class.qualifiedName,
-            Routes.Profile::class.qualifiedName
-        )
+    val mainRoutes = setOf(
+        Routes.Home::class.qualifiedName,
+        Routes.Notes::class.qualifiedName,
+        Routes.Profile::class.qualifiedName
+    )
 
-        val showBottomBar = currentRoute in mainRoutes
-        val notesViewModel: NotesViewModel = koinViewModel()
+    val showBottomBar = currentRoute in mainRoutes
+    val notesViewModel: NotesViewModel = koinViewModel()
+    var isDarkTheme by remember { mutableStateOf(false) }
 
+    MaterialTheme(
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+    ) {
         Scaffold(
             bottomBar = {
                 if (showBottomBar) {
@@ -103,20 +108,23 @@ fun App() {
                         onNavigateToRegister = { navController.navigate(Routes.Register) }
                     )
                 }
+
                 composable<Routes.Register> {
                     RegisterScreen(
                         onRegisterSuccess = { navController.popBackStack() }
                     )
                 }
+
                 composable<Routes.Home> {
                     HomeScreen(
                         onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
-                        onViewNotesClick = { navController.navigate(Routes.Notes) },
-                        onEditNoteClick = { note ->
+                        onViewNotesClick = { navController.navigate(Routes.Notes) },      onEditNoteClick = { note ->
                             navController.navigate(Routes.NoteForm(noteId = note.id))
                         }
+
                     )
                 }
+
                 composable<Routes.Notes> {
                     NotesScreen(
                         viewModel = notesViewModel,
@@ -127,13 +135,16 @@ fun App() {
                 }
                 composable<Routes.Profile> {
                     ProfileScreen(
-                        onLogout = {
+                        isDarkTheme = isDarkTheme,
+                        onToggleTheme = { isDarkTheme = it },
+                        onLoggedOut = {
                             navController.navigate(Routes.Login) {
                                 popUpTo(0) { inclusive = true }
                             }
                         }
                     )
                 }
+
                 composable<Routes.NoteForm> { backStackEntry ->
                     val route: Routes.NoteForm = backStackEntry.toRoute()
                     val noteToEdit = route.noteId?.let { notesViewModel.findNoteById(it) }
@@ -145,10 +156,11 @@ fun App() {
                         onCancel = { navController.popBackStack() }
                     )
                 }
-            }
-        }
-    }
+            } // cierra NavHost
+        } // cierra Scaffold
+    } // cierra MaterialTheme
 }
+
 private fun NavHostController.navigateToTab(route: Routes) {
     navigate(route) {
         popUpTo(graph.findStartDestination().id) { saveState = true }
