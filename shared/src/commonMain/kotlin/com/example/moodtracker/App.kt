@@ -77,119 +77,149 @@ fun App() {
                 CircularProgressIndicator()
             }
         }
+
         else -> {
-            val startDestination = if (status is SessionStatus.Authenticated) Routes.Home else Routes.Login
+            val startDestination =
+                if (status is SessionStatus.Authenticated) Routes.Home else Routes.Login
 
 
-    MaterialTheme(
-        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
-    ) {
-        Scaffold(
-            bottomBar = {
-                if (showBottomBar) {
-                    NavigationBar {
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.Home::class.qualifiedName,
-                            onClick = { navController.navigateToTab(Routes.Home) },
-                            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-                            label = { Text("Home") }
-                        )
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.Notes::class.qualifiedName,
-                            onClick = { navController.navigateToTab(Routes.Notes) },
-                            icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Notas") },
-                            label = { Text("Notas") }
-                        )
-                        NavigationBarItem(
-                            selected = currentRoute == Routes.Profile::class.qualifiedName,
-                            onClick = { navController.navigateToTab(Routes.Profile) },
-                            icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
-                            label = { Text("Perfil") }
-                        )
-                    }
-                }
-            }
-        ) { paddingValues ->
-            NavHost(
-                navController = navController,
-                startDestination = startDestination,
-                modifier = Modifier.padding(paddingValues)
+            MaterialTheme(
+                colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
             ) {
-                composable<Routes.Login> {
-                    LoginScreen(
-                        onLoginSuccess = {
-                            notesViewModel.loadNotes()
-                            navController.navigate(Routes.Home) {
-                                popUpTo(Routes.Login) { inclusive = true }
-                            }
-                        },
-                        onNavigateToRegister = { navController.navigate(Routes.Register) }
-                    )
-                }
-                composable<Routes.Register> {
-                    RegisterScreen(
-                        onRegisterSuccess = { navController.popBackStack() }
-                    )
-                }
-                composable<Routes.Home> {
-                    HomeScreen(
-                        notesViewModel = notesViewModel,
-                        onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
-                        onViewNotesClick = { navController.navigate(Routes.Notes) },
-                        onEditNoteClick = { note ->
-                            navController.navigate(Routes.NoteForm(noteId = note.id))
-                        },
-                        onCardClick = { note ->
-                            navController.navigate(Routes.NoteDetail(noteId = note.id)) }
-                    )
-                }
-
-                composable<Routes.NoteDetail> { backStackEntry ->
-                    val route: Routes.NoteDetail = backStackEntry.toRoute()
-                    val note = notesViewModel.findNoteById(route.noteId)
-
-                    NoteDetailScreen(
-                        note = note,
-                        onBack = { navController.popBackStack() },
-                        onEditClick = { navController.navigate(Routes.NoteForm(noteId = it.id)) }
-                    )
-                }
-                composable<Routes.Notes> {
-                    NotesScreen(
-                        viewModel = notesViewModel,
-                        onEditNote = { note -> navController.navigate(Routes.NoteForm(noteId = note.id)) },
-                        onNoteClick = { note -> navController.navigate(Routes.NoteDetail(noteId = note.id)) },
-                        onCardClick = { note -> navController.navigate(Routes.NoteDetail(noteId = note.id)) }
-                    )
-                }
-                composable<Routes.Profile> {
-                    ProfileScreen(
-                        isDarkTheme = isDarkTheme,
-                        onToggleTheme = { isDarkTheme = it },
-                        onLoggedOut = {
-                            navController.navigate(Routes.Login) {
-                                popUpTo(0) { inclusive = true }
+                Scaffold(
+                    bottomBar = {
+                        if (showBottomBar) {
+                            NavigationBar {
+                                NavigationBarItem(
+                                    selected = currentRoute == Routes.Home::class.qualifiedName,
+                                    onClick = { navController.navigateToTab(Routes.Home) },
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.Home,
+                                            contentDescription = "Home"
+                                        )
+                                    },
+                                    label = { Text("Home") }
+                                )
+                                NavigationBarItem(
+                                    selected = currentRoute == Routes.Notes::class.qualifiedName,
+                                    onClick = { navController.navigateToTab(Routes.Notes) },
+                                    icon = {
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.List,
+                                            contentDescription = "Notas"
+                                        )
+                                    },
+                                    label = { Text("Notas") }
+                                )
+                                NavigationBarItem(
+                                    selected = currentRoute == Routes.Profile::class.qualifiedName,
+                                    onClick = { navController.navigateToTab(Routes.Profile) },
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.Person,
+                                            contentDescription = "Perfil"
+                                        )
+                                    },
+                                    label = { Text("Perfil") }
+                                )
                             }
                         }
-                    )
-                }
-                composable<Routes.NoteForm> { backStackEntry ->
-                    val route: Routes.NoteForm = backStackEntry.toRoute()
-                    val noteToEdit = route.noteId?.let { notesViewModel.findNoteById(it) }
+                    }
+                ) { paddingValues ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDestination,
+                        modifier = Modifier.padding(paddingValues)
+                    ) {
+                        composable<Routes.Login> {
+                            LoginScreen(
+                                onLoginSuccess = {
+                                    notesViewModel.loadNotes()
+                                    navController.navigate(Routes.Home) {
+                                        popUpTo(Routes.Login) { inclusive = true }
+                                    }
+                                },
+                                onNavigateToRegister = { navController.navigate(Routes.Register) }
+                            )
+                        }
+                        composable<Routes.Register> {
+                            RegisterScreen(
+                                onRegisterSuccess = { navController.popBackStack() }
+                            )
+                        }
+                        composable<Routes.Home> {
+                            HomeScreen(
+                                notesViewModel = notesViewModel,
+                                onAddNoteClick = { navController.navigate(Routes.NoteForm()) },
+                                onViewNotesClick = { navController.navigate(Routes.Notes) },
+                                onEditNoteClick = { note ->
+                                    navController.navigate(Routes.NoteForm(noteId = note.id))
+                                },
+                                onCardClick = { note ->
+                                    navController.navigate(Routes.NoteDetail(noteId = note.id))
+                                }
+                            )
+                        }
 
-                    NoteFormScreen(
-                        noteToEdit = noteToEdit,
-                        viewModel = notesViewModel,
-                        onSaved = { navController.popBackStack() },
-                        onCancel = { navController.popBackStack() }
-                    )
+                        composable<Routes.NoteDetail> { backStackEntry ->
+                            val route: Routes.NoteDetail = backStackEntry.toRoute()
+                            val note = notesViewModel.findNoteById(route.noteId)
+
+                            NoteDetailScreen(
+                                note = note,
+                                onBack = { navController.popBackStack() },
+                                onEditClick = { navController.navigate(Routes.NoteForm(noteId = it.id)) }
+                            )
+                        }
+                        composable<Routes.Notes> {
+                            NotesScreen(
+                                viewModel = notesViewModel,
+                                onEditNote = { note -> navController.navigate(Routes.NoteForm(noteId = note.id)) },
+                                onNoteClick = { note ->
+                                navController.navigate(
+                                        Routes.NoteDetail(
+                                            noteId = note.id
+                                        )
+                                    )
+                                },
+                                onCardClick = { note ->
+                                    navController.navigate(
+                                        Routes.NoteDetail(
+                                            noteId = note.id
+                                        )
+                                    )
+                                }
+                            )
+                        }
+                        composable<Routes.Profile> {
+                            ProfileScreen(
+                                isDarkTheme = isDarkTheme,
+                                onToggleTheme = { isDarkTheme = it },
+                                onLoggedOut = {
+                                    navController.navigate(Routes.Login) {
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+                        composable<Routes.NoteForm> { backStackEntry ->
+                            val route: Routes.NoteForm = backStackEntry.toRoute()
+                            val noteToEdit = route.noteId?.let { notesViewModel.findNoteById(it) }
+
+                            NoteFormScreen(
+                                noteToEdit = noteToEdit,
+                                viewModel = notesViewModel,
+                                onSaved = { navController.popBackStack() },
+                                onCancel = { navController.popBackStack() }
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
-}
-    }
 
 
 private fun NavHostController.navigateToTab(route: Routes) {

@@ -137,7 +137,7 @@ fun HomeScreen(
                     }
                 }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -165,7 +165,7 @@ fun HomeScreen(
                 }
 
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -191,7 +191,7 @@ fun HomeScreen(
                     }
                 }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -231,8 +231,8 @@ fun HomeScreen(
                     }
                 }
 
-            Spacer(modifier = Modifier.height(96.dp))
-        }
+                Spacer(modifier = Modifier.height(96.dp))
+            }
 
             FloatingActionButton(
                 onClick = onAddNoteClick,
@@ -247,6 +247,7 @@ fun HomeScreen(
         }
     }
 }
+
 @Composable
 private fun WeeklyMoodItem(dayMood: DayMood) {
     Column(
