@@ -19,7 +19,7 @@ class NotesViewModel(
     private val updateNoteUseCase: UpdateNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
     private val saveNoteUseCase: SaveNoteUseCase,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 
 ) : ViewModel() {
     var uiState by mutableStateOf(NotesUiState())
@@ -47,10 +47,16 @@ class NotesViewModel(
     }
     fun loadNotes() {
         viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true, error = null)
+            if (!uiState.hasLoadedOnce) {
+                uiState = uiState.copy(isLoading = true, error = null)
+            }
             getNotesUseCase()
-                .onSuccess { notes -> uiState = uiState.copy(isLoading = false, notes = notes) }
-                .onFailure { uiState = uiState.copy(isLoading = false, error = it.message) }
+                .onSuccess { notes ->
+                    uiState = uiState.copy(isLoading = false, notes = notes, hasLoadedOnce = true)
+                }
+                .onFailure {
+                    uiState = uiState.copy(isLoading = false, error = it.message)
+                }
         }
     }
     fun updateNote(

@@ -62,7 +62,7 @@ fun NotesScreen(
             .background(backgroundGradient)
     ) {
         when {
-            uiState.isLoading -> {
+            !uiState.hasLoadedOnce  -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
