@@ -57,7 +57,9 @@ fun HomeScreen(
     onEditNoteClick: (Note) -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
     notesViewModel: NotesViewModel,
-) {
+    onCardClick: (Note) -> Unit,
+
+    ) {
     val uiState = viewModel.uiState
     val notesUiState = notesViewModel.uiState
     val greeting = remember { greetingByTime() }
@@ -151,7 +153,7 @@ fun HomeScreen(
 
                         LazyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             items(uiState.weeklyMoods) { dayMood ->
                                 WeeklyMoodItem(dayMood)
@@ -161,6 +163,7 @@ fun HomeScreen(
 
                     }
                 }
+
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -220,7 +223,9 @@ fun HomeScreen(
                             NoteCard(
                                 note = note,
                                 onEditClick = onEditNoteClick,
-                                onDeleteConfirmed = { notesViewModel.deleteNote(it.id) }
+                                onDeleteConfirmed = { notesViewModel.deleteNote(it.id) },
+                                onCardClick = onCardClick
+
                             )
                         }
                     }
@@ -242,6 +247,7 @@ fun HomeScreen(
         }
     }
 }
+
 @Composable
 private fun WeeklyMoodItem(dayMood: DayMood) {
     Column(
