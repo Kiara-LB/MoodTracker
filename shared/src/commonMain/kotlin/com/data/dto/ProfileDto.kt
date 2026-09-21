@@ -10,8 +10,7 @@ data class ProfileDto(
     @SerialName("user_id") val userId: String,
     val name: String,
     @SerialName("avatar_id") val avatarId: String,
-    @SerialName("banner_color_id") val bannerColorId: String
 )
 
-fun ProfileDto.toDomain() = Profile(userId, name, avatarId, bannerColorId)
-fun Profile.toDto() = ProfileDto(userId, name, avatarId, bannerColorId)
+fun ProfileDto.toDomain() = Profile(userId, name, avatarId)
+fun Profile.toDto() = ProfileDto(userId, name, avatarId)

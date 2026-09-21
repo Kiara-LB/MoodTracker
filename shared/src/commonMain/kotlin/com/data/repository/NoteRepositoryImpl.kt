@@ -1,7 +1,8 @@
 package com.data.repository
 
-import com.data.remote.NoteRemoteDataSource
+import com.data.remote.NoteRemoteDataSourceImpl
 import com.data.dto.NoteDto
+import com.data.remote.NoteRemoteDataSource
 import com.data.remote.mapper.toDomain
 import com.domain.model.Mood
 import com.domain.model.Note
@@ -10,7 +11,8 @@ import com.domain.repository.NoteRepository
 
 class NoteRepositoryImpl(
     private val dataSource: NoteRemoteDataSource
-) : NoteRepository {
+)
+    : NoteRepository {
 
     override suspend fun saveNote(
         mood: Mood,

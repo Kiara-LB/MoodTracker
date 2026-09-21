@@ -4,7 +4,6 @@ data class Profile(
     val userId: String,
     val name: String,
     val avatarId: String,
-    val bannerColorId: String
 )
 
 enum class PredefinedAvatar(val id: String, val resourceName: String) {
@@ -18,13 +17,3 @@ enum class PredefinedAvatar(val id: String, val resourceName: String) {
     }
 }
 
-enum class PredefinedBanner(val id: String, val color: Long) {
-    BLUE("banner_blue", 0xFF3B82F6),
-    GREEN("banner_green", 0xFF22C55E),
-    PURPLE("banner_purple", 0xFF8B5CF6),
-    ORANGE("banner_orange", 0xFFF97316);
-
-    companion object {
-        fun fromId(id: String) = entries.find { it.id == id } ?: BLUE
-    }
-}

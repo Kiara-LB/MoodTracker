@@ -13,8 +13,8 @@ val presentationModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
     viewModel { NotesViewModel(get(), get(), get(), get(), get()) }
-    viewModel { ProfileViewModel(get()) }
-    viewModel { HomeViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { HomeViewModel(get(), get())  }
 
 
 

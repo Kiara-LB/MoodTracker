@@ -9,6 +9,7 @@ import com.domain.model.DayMood
 import com.domain.model.MoodPercentage
 import com.domain.model.Note
 import com.domain.repository.AuthRepository
+import com.domain.repository.ProfileRepository
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -19,21 +20,26 @@ import kotlinx.datetime.DateTimeUnit
 
 
 class HomeViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
         private set
 
-    fun updateStats(notes: List<Note>) {
+    suspend fun updateStats(notes: List<Note>) {
+        val userName = profileRepository.getProfile()
+            .getOrNull()
+            ?.name
+            ?: "Usuario"
+
         uiState = uiState.copy(
-            userName = authRepository.currentUserName() ?: "Usuario",
+            userName = userName,
             weeklyMoods = computeWeeklyMoods(notes),
             monthlyPercentages = computeMonthlyPercentages(notes),
             recentNotes = notes.sortedByDescending { it.createdAt }.take(3)
         )
     }
-
     private fun computeWeeklyMoods(notes: List<Note>): List<DayMood> {
         val timeZone = TimeZone.currentSystemDefault()
         val today = kotlin.time.Clock.System.todayIn(timeZone)
