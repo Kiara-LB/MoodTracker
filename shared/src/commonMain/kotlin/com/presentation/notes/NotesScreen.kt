@@ -55,14 +55,18 @@ fun NotesScreen(
             matchesMood && matchesDate
         }
     }
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFF3D5F6), Color(0xFFFCE4EC))
-    )
-
+//    val backgroundGradient = Brush.verticalGradient(
+//        colors = listOf(
+//            Color(0xFFF6E3E8),
+//            Color(0xFFF6E3E8)
+//
+//        )
+//    )
+    val background = Color(0xFFF1ECF5)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundGradient)
+            .background(background)
     ) {
         when {
             !uiState.hasLoadedOnce  -> {
@@ -98,10 +102,12 @@ fun NotesScreen(
                                     modifier = Modifier.padding(16.dp, 12.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(18.dp),
+                                        tint = Color.Gray)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = selectedDateMillis?.let { formatMillisAsDate(it) } ?: "Filtrar por fecha"
+                                        text = selectedDateMillis?.let { formatMillisAsDate(it) } ?: "Filtrar por fecha",
+                                        color = Color.Gray
                                     )
                                 }
                             }
@@ -195,7 +201,7 @@ fun NotesScreen(
     }
 }
 @Composable
-private fun MoodFilterChip(
+fun MoodFilterChip(
     mood: Mood,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -218,7 +224,7 @@ private fun MoodFilterChip(
         ) {
             Text(
                 text = mood.displayName,
-                color = Color.White,
+                color = Color.Black,
                 style = MaterialTheme.typography.labelLarge
             )
         }

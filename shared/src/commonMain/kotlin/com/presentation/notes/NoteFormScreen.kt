@@ -1,11 +1,16 @@
 package com.presentation.notes
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.domain.model.Mood
 import com.domain.model.Note
@@ -33,81 +38,122 @@ fun NoteFormScreen(
         }
         wasSaving = uiState.isSaving
     }
+    val background = Color(0xFFF1ECF5)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(background)
             .padding(24.dp)
     ) {
-        Text(
-            text = if (noteToEdit == null) "¿Cómo te sentís hoy?" else "Editar nota",
-            style = MaterialTheme.typography.headlineSmall
-        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = if (noteToEdit == null) "¿Cómo te sentís hoy?" else "Editar nota",
+                style = MaterialTheme.typography.headlineSmall
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(Mood.entries) { mood ->
-                FilterChip(
-                    selected = selectedMood == mood,
-                    onClick = { selectedMood = mood },
-                    label = { Text(mood.displayName) }
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Mood.entries.forEach { mood ->
+                    MoodFilterChip(
+                        mood = mood,
+                        isSelected = selectedMood == mood,
+                        onClick = { selectedMood = mood }
+                    )
+                }
+            }
+
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            OutlinedTextField(
+                value = feelingText,
+                onValueChange = { feelingText = it },
+                placeholder = { Text("¿Cómo te sentís?") },
+                shape = RoundedCornerShape(20.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    disabledBorderColor = Color.Transparent
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 2
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = causeText,
+                onValueChange = { causeText = it },
+                placeholder = { Text("¿Debido a qué?") },
+                shape = RoundedCornerShape(20.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    disabledBorderColor = Color.Transparent
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 2
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = description,
+                onValueChange = { if (it.length <= 200) description = it },
+                placeholder = { Text("Descripción") },
+                supportingText = { Text("${description.length}/200") },
+                shape = RoundedCornerShape(20.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    disabledBorderColor = Color.Transparent
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            val errorMessage = uiState.error
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = feelingText,
-            onValueChange = { feelingText = it },
-            label = { Text("¿Cómo te sentís?") },
-            modifier = Modifier.fillMaxWidth(),
-            minLines = 2
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = causeText,
-            onValueChange = { causeText = it },
-            label = { Text("¿Debido a qué?") },
-            modifier = Modifier.fillMaxWidth(),
-            minLines = 2
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { if (it.length <= 200) description = it },
-            label = { Text("Descripción") },
-            supportingText = { Text("${description.length}/200") },
-            modifier = Modifier.fillMaxWidth(),
-            minLines = 3
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        val errorMessage = uiState.error
-        if (errorMessage != null) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
+
+
         ) {
-            OutlinedButton(
+            Button(
                 onClick = onCancel,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(Color.LightGray)
+
             ) {
-                Text("Cancelar")
+                Text("Cancelar", color = Color.Gray)
             }
 
             Button(
@@ -120,7 +166,8 @@ fun NoteFormScreen(
                     }
                 },
                 enabled = !uiState.isSaving && selectedMood != null && description.isNotBlank(),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(Color(0xFFB083BB))
             ) {
                 if (uiState.isSaving) {
                     CircularProgressIndicator(
@@ -129,7 +176,7 @@ fun NoteFormScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(if (noteToEdit == null) "Guardar" else "Guardar cambios")
+                    Text("Guardar")
                 }
             }
         }
