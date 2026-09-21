@@ -71,9 +71,14 @@ fun HomeScreen(
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFEFD6EF),
-            Color(0xFFFCE4EC)
+            Color(0xFFF1E3F4),
+            Color(0xFFF1E3F4),
+            Color(0xFFFFDBE4)
         )
+//            Color(0xFFD2CEF1),
+//            Color(0xFFE2CCEC),
+//            Color(0xFFFCE4EC)
+//        )
     )
     LaunchedEffect(notesUiState.notes) {
         viewModel.updateStats(notesUiState.notes)
@@ -111,7 +116,7 @@ fun HomeScreen(
                         .height(140.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFDBC4EF)
+                        containerColor = Color(0xFFD7C4EE)
                     )
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -236,7 +241,7 @@ fun HomeScreen(
 
             FloatingActionButton(
                 onClick = onAddNoteClick,
-                containerColor = Color(0xFFEED5EC),
+                containerColor = Color(0xFFD5C3F1),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(20.dp)

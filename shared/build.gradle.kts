@@ -87,9 +87,11 @@ kotlin {
             implementation(libs.material.icons.extended)
             implementation(libs.navigation.compose)
         }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.ktor.client.darwin)
 
         }
     }
