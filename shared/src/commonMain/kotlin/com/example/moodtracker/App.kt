@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -26,6 +27,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -89,7 +91,9 @@ fun App() {
                 Scaffold(
                     bottomBar = {
                         if (showBottomBar) {
-                            NavigationBar {
+                            NavigationBar(
+                                containerColor = Color(0xFFEEE2F2)
+                            ) {
                                 NavigationBarItem(
                                     selected = currentRoute == Routes.Home::class.qualifiedName,
                                     onClick = { navController.navigateToTab(Routes.Home) },
@@ -99,7 +103,11 @@ fun App() {
                                             contentDescription = "Home"
                                         )
                                     },
-                                    label = { Text("Home") }
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = Color(0xFF7D5099),
+                                        unselectedIconColor = Color.Gray,
+                                        indicatorColor = Color.Transparent
+                                    )
                                 )
                                 NavigationBarItem(
                                     selected = currentRoute == Routes.Notes::class.qualifiedName,
@@ -110,7 +118,11 @@ fun App() {
                                             contentDescription = "Notas"
                                         )
                                     },
-                                    label = { Text("Notas") }
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = Color(0xFF7D5099),
+                                        unselectedIconColor = Color.Gray,
+                                        indicatorColor = Color.Transparent
+                                    )
                                 )
                                 NavigationBarItem(
                                     selected = currentRoute == Routes.Profile::class.qualifiedName,
@@ -121,7 +133,11 @@ fun App() {
                                             contentDescription = "Perfil"
                                         )
                                     },
-                                    label = { Text("Perfil") }
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = Color(0xFF7D5099),
+                                        unselectedIconColor = Color.Gray,
+                                        indicatorColor = Color.Transparent
+                                    )
                                 )
                             }
                         }

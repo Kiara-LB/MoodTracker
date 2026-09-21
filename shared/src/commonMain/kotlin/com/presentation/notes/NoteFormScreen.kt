@@ -1,5 +1,6 @@
 package com.presentation.notes
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.domain.model.Mood
 import com.domain.model.Note
@@ -53,7 +55,8 @@ fun NoteFormScreen(
         ) {
             Text(
                 text = if (noteToEdit == null) "¿Cómo te sentís hoy?" else "Editar nota",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -147,13 +150,14 @@ fun NoteFormScreen(
 
 
         ) {
-            Button(
+            OutlinedButton(
                 onClick = onCancel,
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(Color.LightGray)
+                border = BorderStroke(1.dp, Color(0xFFB083BB)),
+                colors = ButtonDefaults.outlinedButtonColors(Color.Transparent)
 
             ) {
-                Text("Cancelar", color = Color.Gray)
+                Text("Cancelar", color = Color(0xFFB083BB))
             }
 
             Button(
