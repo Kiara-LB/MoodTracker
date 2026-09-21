@@ -79,7 +79,8 @@ fun NoteFormScreen(
 
             OutlinedTextField(
                 value = feelingText,
-                onValueChange = { feelingText = it },
+                onValueChange = { if (it.length <= 10) feelingText = it },
+                supportingText = { Text("${feelingText.length}/10") },
                 placeholder = { Text("¿Cómo te sentís?") },
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -97,8 +98,9 @@ fun NoteFormScreen(
 
             OutlinedTextField(
                 value = causeText,
-                onValueChange = { causeText = it },
+                onValueChange = { if (it.length <= 20) causeText = it },
                 placeholder = { Text("¿Debido a qué?") },
+                supportingText = { Text("${causeText.length}/20") },
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
