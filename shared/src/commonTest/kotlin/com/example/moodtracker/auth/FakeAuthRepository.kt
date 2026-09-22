@@ -9,12 +9,21 @@ class FakeAuthRepository : AuthRepository {
     var userId: String? = "u1"
     var signOutShouldFail: Boolean = false
     var signOutCalled: Boolean = false
+    var registerResult: Result<Unit> = Result.success(Unit)
+    var loginResult: Result<Unit> = Result.success(Unit)
+    var registerCalledWith: Triple<String, String, String>? = null
+    var loginCalledWith: Pair<String, String>? = null
 
-    override suspend fun register(name: String, email: String, password: String): Result<Unit> =
-        Result.success(Unit)
+    override suspend fun register(name: String, email: String, password: String): Result<Unit> {
+        registerCalledWith = Triple(name, email, password)
+        return registerResult
+    }
 
-    override suspend fun login(email: String, password: String): Result<Unit> =
-        Result.success(Unit)
+    override suspend fun login(email: String, password: String): Result<Unit> {
+        loginCalledWith = email to password
+        return loginResult
+    }
+
 
     override suspend fun signOut(): Result<Unit> {
         if (signOutShouldFail) return Result.failure(RuntimeException("signout failed"))

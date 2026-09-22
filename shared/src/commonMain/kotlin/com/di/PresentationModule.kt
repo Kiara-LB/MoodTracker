@@ -3,7 +3,6 @@ package com.di
 import com.presentation.auth.LoginViewModel
 import com.presentation.auth.RegisterViewModel
 import com.presentation.home.HomeViewModel
-import com.presentation.notes.AddNoteViewModel
 import com.presentation.notes.NotesViewModel
 import com.presentation.profile.ProfileViewModel
 import org.koin.core.module.dsl.viewModel

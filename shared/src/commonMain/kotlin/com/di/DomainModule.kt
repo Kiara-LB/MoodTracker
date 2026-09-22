@@ -6,7 +6,7 @@ import com.domain.usecase.LogoutUseCase
 import com.domain.usecase.RegisterUseCase
 import com.domain.usecase.SaveNoteUseCase
 import com.domain.usecase.UpdateNoteUseCase
-import com.presentation.notes.DeleteNoteUseCase
+import com.domain.usecase.DeleteNoteUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
