@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.domain.model.Mood
 import com.domain.model.Note
 import com.domain.repository.AuthRepository
+import com.domain.usecase.DeleteNoteUseCase
 import com.domain.usecase.GetNotesUseCase
 import com.domain.usecase.SaveNoteUseCase
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class NotesViewModel(
     private val saveNoteUseCase: SaveNoteUseCase,
     private val authRepository: AuthRepository,
 
-) : ViewModel() {
+    ) : ViewModel() {
     var uiState by mutableStateOf(NotesUiState())
         private set
 

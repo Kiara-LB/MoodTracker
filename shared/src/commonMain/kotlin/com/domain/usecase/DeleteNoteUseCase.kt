@@ -1,4 +1,4 @@
-package com.presentation.notes
+package com.domain.usecase
 
 import com.domain.repository.NoteRepository
 

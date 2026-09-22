@@ -112,28 +112,28 @@ fun ProfileScreen(
                 }
             }
 
-            Surface(
-                shape = RoundedCornerShape(50),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.DarkMode, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.DarkGray)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text("Modo oscuro", color = Color.DarkGray, style = MaterialTheme.typography.bodyLarge)
-                    }
-                    Switch(checked = isDarkTheme, onCheckedChange = onToggleTheme)
-                }
-            }
+//            Surface(
+//                shape = RoundedCornerShape(50),
+//                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Gray),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(56.dp)
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 20.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                        Icon(Icons.Default.DarkMode, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.DarkGray)
+//                        Spacer(modifier = Modifier.width(12.dp))
+//                        Text("Modo oscuro", color = Color.DarkGray, style = MaterialTheme.typography.bodyLarge)
+//                    }
+//                    Switch(checked = isDarkTheme, onCheckedChange = onToggleTheme)
+//                }
+//            }
 
             Spacer(modifier = Modifier.weight(1f))
 

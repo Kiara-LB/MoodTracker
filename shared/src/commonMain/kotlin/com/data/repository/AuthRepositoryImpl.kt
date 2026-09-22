@@ -1,6 +1,7 @@
 package com.data.repository
 
 import com.data.remote.AuthRemoteDataSource
+import com.data.remote.AuthRemoteDataSourceImpl
 import com.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource) : AuthRepository {
@@ -20,16 +21,16 @@ class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource) : AuthRep
         }
     }
     override fun currentUserId() = dataSource.currentUserId()
-    override fun currentUserName() = dataSource.currentUserName()
-    override fun currentUserAvatarId() = dataSource.currentUserAvatarId()
-
-    override suspend fun updateName(newName: String) = runCatching {
-        dataSource.updateName(newName)
-    }
-
-    override suspend fun updateAvatar(avatarId: String) = runCatching {
-        dataSource.updateAvatar(avatarId)
-    }
+//    override fun currentUserName() = dataSource.currentUserName()
+//    override fun currentUserAvatarId() = dataSource.currentUserAvatarId()
+//
+//    override suspend fun updateName(newName: String) = runCatching {
+//        dataSource.updateName(newName)
+//    }
+//
+//    override suspend fun updateAvatar(avatarId: String) = runCatching {
+//        dataSource.updateAvatar(avatarId)
+//    }
     override val sessionStatus = dataSource.sessionStatus
 
 }
