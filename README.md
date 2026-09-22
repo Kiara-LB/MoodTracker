@@ -24,6 +24,7 @@ Permite a los usuarios registrar cómo se sienten día a día, visualizar su evo
   </tr>
   <tr>
     <td align="center"><b>Nueva nota</b><br><img src="https://github.com/user-attachments/assets/6214fec7-e0bb-414f-86d2-ebd454358582" width="220"/></td>
+      <td align="center"><b>Detalles de la nota</b><br><img src="https://github.com/user-attachments/assets/c97d84b3-d797-4c03-bfc2-a294013d435a"width="220"/></td>
     <td></td>
     <td></td>
   </tr>
