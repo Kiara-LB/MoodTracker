@@ -8,8 +8,6 @@ Permite a los usuarios registrar cómo se sienten día a día, visualizar su evo
 
 ## 📱 Capturas de pantalla
 
-## 📱 Capturas de pantalla
-
 <table>
   <tr>
     <td align="center"><b>Inicio de sesión</b><br><img src="https://github.com/user-attachments/assets/ba35a3b6-2747-4ece-92fd-84130e0043c9" width="220"/></td>
@@ -89,43 +87,60 @@ El proyecto incluye tests unitarios sobre las tres capas principales, usando fak
 - **Profile**: `ProfileRepositoryImplTest`, `ProfileViewModelTest`, con `FakeProfileRemoteDataSource` / `FakeProfileRepository`
 
 ---
-🚀 Setup del proyecto
 
-⚠️ El proyecto completo y funcional se encuentra en la rama develop. Asegurate de estar parado en esa rama antes de ejecutar la app.
+## 🤖 Herramientas de IA
 
-1. Clonar el repositorio
-bash
+Durante el desarrollo se utilizó **Claude (Anthropic)** como herramienta de asistencia, principalmente para resolver dudas sobre tecnologías, debuggear errores de compilación y configuración, y agilizar la escritura de código repetitivo.
+
+---
+
+-
+
+## 🚀 Setup del proyecto
+
+> ⚠️ El proyecto completo y funcional se encuentra en la rama **`develop`**. Asegurate de estar parado en esa rama antes de ejecutar la app.
+
+### 1. Clonar el repositorio
+
+```bash
 git clone <url-del-repo>
 cd MoodTracker
 git checkout develop
-2. Configurar Supabase
+```
 
-El archivo local.properties con las credenciales de Supabase (supabase.url y supabase.key) ya está incluido en el repositorio para facilitar la ejecución del proyecto sin pasos adicionales.
+### 2. Configurar Supabase
 
-La key incluida es la Publishable key (equivalente a la antigua anon key), diseñada para ser pública y usada en clientes — la seguridad real de los datos está garantizada por las políticas de Row Level Security (RLS) configuradas en la base de datos, no por el secreto de esta key.
+El archivo `local.properties` con las credenciales de Supabase (`supabase.url` y `supabase.key`) ya está incluido en el repositorio para facilitar la ejecución del proyecto sin pasos adicionales.
 
-3. Base de datos
+> La key incluida es la **Publishable key** (equivalente a la antigua `anon key`), diseñada para ser pública y usada en clientes — la seguridad real de los datos está garantizada por las políticas de Row Level Security (RLS) configuradas en la base de datos, no por el secreto de esta key.
 
-La tabla notes requiere las siguientes columnas y políticas de RLS (Row Level Security):
+### 3. Base de datos
 
-Columna	Tipo	Notas
-id	uuid	Primary key, default gen_random_uuid()
-user_id	uuid	FK a auth.users.id, on delete cascade
-mood	text	
-feeling_text	text	
-cause_text	text	
-description	varchar(200)	
-created_at	timestamptz	default now()
+La tabla `notes` requiere las siguientes columnas y políticas de RLS (Row Level Security):
 
-Con políticas RLS de SELECT / INSERT / UPDATE / DELETE restringidas a auth.uid() = user_id.
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | `uuid` | Primary key, default `gen_random_uuid()` |
+| `user_id` | `uuid` | FK a `auth.users.id`, `on delete cascade` |
+| `mood` | `text` | |
+| `feeling_text` | `text` | |
+| `cause_text` | `text` | |
+| `description` | `varchar(200)` | |
+| `created_at` | `timestamptz` | default `now()` |
 
-4. Ejecutar
+Con políticas RLS de `SELECT` / `INSERT` / `UPDATE` / `DELETE` restringidas a `auth.uid() = user_id`.
+
+### 4. Ejecutar
 
 Abrir el proyecto en Android Studio y correr sobre un emulador/dispositivo Android, o abrir el proyecto iOS desde Xcode (requiere macOS).
 
-🔑 Cuenta de prueba
+---
+
+## 🔑 Cuenta de prueba
 
 Para explorar la app con datos ya cargados, sin necesidad de registrarse y cargar notas manualmente:
 
+```
 Email: test123@gmail.com
 Contraseña: Test123
+```
