@@ -114,31 +114,34 @@ El archivo `local.properties` con las credenciales de Supabase (`supabase.url` y
 
 > La key incluida es la **Publishable key** (equivalente a la antigua `anon key`), diseñada para ser pública y usada en clientes — la seguridad real de los datos está garantizada por las políticas de Row Level Security (RLS) configuradas en la base de datos, no por el secreto de esta key.
 
-3. Base de datos
-
+### 3. Base de datos
+ 
 El proyecto utiliza dos tablas principales, ambas con Row Level Security (RLS) habilitado.
-
-Tabla notes
-
-Columna	Tipo	Notas
-id	uuid	Primary key, default gen_random_uuid()
-user_id	uuid	FK a auth.users.id
-mood	text	
-feeling_text	text	
-cause_text	text	
-description	varchar	
-created_at	timestamptz	default now()
-
-Políticas RLS: SELECT / INSERT / UPDATE / DELETE restringidas a auth.uid() = user_id.
-
-Tabla profiles
-
-Columna	Tipo	Notas
-user_id	uuid	Primary key, FK a auth.users.id
-name	text	
-avatar_id	text	
-
-Políticas RLS: SELECT / INSERT (upsert) / UPDATE restringidas a auth.uid() = user_id.
+ 
+**Tabla `notes`**
+ 
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | `uuid` | Primary key, default `gen_random_uuid()` |
+| `user_id` | `uuid` | FK a `auth.users.id` |
+| `mood` | `text` | |
+| `feeling_text` | `text` | |
+| `cause_text` | `text` | |
+| `description` | `varchar` | |
+| `created_at` | `timestamptz` | default `now()` |
+ 
+Políticas RLS: `SELECT` / `INSERT` / `UPDATE` / `DELETE` restringidas a `auth.uid() = user_id`.
+ 
+**Tabla `profiles`**
+ 
+| Columna | Tipo | Notas |
+|---|---|---|
+| `user_id` | `uuid` | Primary key, FK a `auth.users.id` |
+| `name` | `text` | |
+| `avatar_id` | `text` | |
+ 
+Políticas RLS: `SELECT` / `INSERT` (upsert) / `UPDATE` restringidas a `auth.uid() = user_id`.
+ 
 ### 4. Ejecutar
 
 Abrir el proyecto en Android Studio y correr sobre un emulador/dispositivo Android, o abrir el proyecto iOS desde Xcode (requiere macOS).
