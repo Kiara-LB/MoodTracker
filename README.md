@@ -61,7 +61,6 @@ Permite a los usuarios registrar cómo se sienten día a día, visualizar su evo
   - Postgrest (base de datos, con Row Level Security)
 - **Koin** — inyección de dependencias
 - **Navigation Compose Multiplatform** — navegación con backstack real y argumentos tipados
-- **BuildKonfig** — manejo de variables de entorno (credenciales de Supabase) sin hardcodear en el código fuente
 
 ### Arquitectura
 
